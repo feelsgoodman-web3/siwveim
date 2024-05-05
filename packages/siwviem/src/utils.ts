@@ -1,10 +1,7 @@
 import { randomStringForEntropy } from "@stablelib/random";
-import { Chain, PublicClient, Transport, hashMessage } from "viem";
+import { ByteArray, Chain, Hex, PublicClient, Transport } from "viem";
 
 import type { SiwViemMessage } from "./client";
-import { ByteArray, Hex } from "viem/src/types/misc";
-import { EIP1271_ABI } from "./abis";
-import { EIP1271_MAGICVALUE } from "./constants";
 
 const ISO8601 =
   /^(?<date>[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01]))[Tt]([01][0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9]|60)(.[0-9]+)?(([Zz])|([+|-]([01][0-9]|2[0-3]):[0-5][0-9]))$/;
@@ -22,15 +19,11 @@ export const checkContractWalletSignature = async (
   signature: Hex | ByteArray,
   publicClient: PublicClient<Transport, Chain>
 ): Promise<boolean> => {
-  const hashedMessage = hashMessage(message.prepareMessage());
-
-  const res = await publicClient.readContract({
+  return await publicClient.verifyMessage({
     address: message.address,
-    abi: EIP1271_ABI,
-    functionName: "isValidSignature",
-    args: [hashedMessage, signature],
+    message: message.prepareMessage(),
+    signature,
   });
-  return EIP1271_MAGICVALUE === res;
 };
 
 /**
