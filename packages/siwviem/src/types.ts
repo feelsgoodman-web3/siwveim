@@ -1,6 +1,12 @@
 import type { SiwViemMessage } from "./client";
-import type { Chain, PublicClient, Transport, TypedData } from "viem";
-import type { ByteArray, Hex } from "viem/src/types/misc";
+import type {
+  ByteArray,
+  Chain,
+  Hex,
+  PublicClient,
+  Transport,
+  TypedData,
+} from "viem";
 
 export interface VerifyParams {
   /** Signature of the message signed by the wallet */
